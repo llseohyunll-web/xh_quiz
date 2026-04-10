@@ -1,0 +1,975 @@
+<!-- Created: 2026-04-10 21:47:26 -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>XH Quiz</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0d0d0d;
+      --surface: #1a1a1a;
+      --surface2: #242424;
+      --text: #f0f0f0;
+      --muted: #777;
+      --border: #2e2e2e;
+      --accent: #d4ff4d;
+
+      --correct: #22c55e;
+      --wrong: #ef4444;
+
+      --type-lyrics-bg: rgba(124,58,237,.18);
+      --type-lyrics-fg: #c4b5fd;
+      --type-lyrics-bd: rgba(124,58,237,.45);
+
+      --type-member-bg: rgba(5,150,105,.18);
+      --type-member-fg: #6ee7b7;
+      --type-member-bd: rgba(5,150,105,.45);
+
+      --type-music-bg: rgba(217,119,6,.18);
+      --type-music-fg: #fcd34d;
+      --type-music-bd: rgba(217,119,6,.45);
+
+      --type-episode-bg: rgba(225,29,72,.18);
+      --type-episode-fg: #fda4af;
+      --type-episode-bd: rgba(225,29,72,.45);
+    }
+
+    html { background: #080808; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 480px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      border-left: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+    }
+
+    .screen {
+      display: none;
+      flex-direction: column;
+      flex: 1;
+      padding: 28px 20px 36px;
+    }
+    .screen.active { display: flex; }
+
+    /* ── Buttons ─────────────────────────────────── */
+    .btn {
+      width: 100%;
+      padding: 15px 20px;
+      border-radius: 14px;
+      border: none;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity .15s, transform .15s;
+      letter-spacing: .3px;
+    }
+    .btn:active { transform: scale(.97); }
+
+    .btn-primary { background: var(--accent); color: #0d0d0d; }
+    .btn-primary:hover { opacity: .88; }
+
+    .btn-secondary {
+      background: var(--surface2);
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover { color: var(--text); border-color: #555; }
+
+    /* ══════════════════════════════════════════════
+       HOME SCREEN
+    ══════════════════════════════════════════════ */
+    #screen-home {
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .home-icon  { font-size: 52px; line-height: 1; margin-bottom: 14px; }
+    .home-title { font-size: 44px; font-weight: 900; letter-spacing: -2px; color: var(--accent); margin-bottom: 6px; }
+    .home-sub   { font-size: 14px; color: var(--muted); margin-bottom: 44px; letter-spacing: .5px; }
+
+    .info-card {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px;
+      margin-bottom: 28px;
+      text-align: left;
+    }
+    .info-card-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 2px;
+      margin-bottom: 14px;
+    }
+    .info-list { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+    .info-list li {
+      font-size: 13.5px;
+      color: var(--muted);
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      line-height: 1.4;
+    }
+    .info-list li::before { content: '▸'; color: var(--accent); flex-shrink: 0; margin-top: 1px; }
+
+    .type-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+    .pill { font-size: 11px; font-weight: 600; padding: 4px 9px; border-radius: 20px; }
+
+    /* ══════════════════════════════════════════════
+       QUIZ SCREEN — LOADING STATE
+    ══════════════════════════════════════════════ */
+    .quiz-loading {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      text-align: center;
+    }
+
+    .loading-spinner {
+      width: 44px;
+      height: 44px;
+      border: 3.5px solid var(--surface2);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin .75s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .loading-msg { font-size: 16px; font-weight: 700; }
+    .loading-sub { font-size: 13px; color: var(--muted); }
+
+    /* ══════════════════════════════════════════════
+       QUIZ SCREEN — CONTENT
+    ══════════════════════════════════════════════ */
+    #quiz-content {
+      display: none;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .quiz-header { margin-bottom: 22px; }
+
+    .quiz-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .quiz-progress-label { font-size: 13px; font-weight: 700; color: var(--muted); }
+    .quiz-score          { font-size: 13px; font-weight: 700; color: var(--correct); }
+
+    .progress-bar {
+      height: 4px;
+      background: var(--surface2);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 99px;
+      transition: width .35s ease;
+    }
+
+    .type-tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 11px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      letter-spacing: .3px;
+    }
+    .type-tag.type-lyrics  { background: var(--type-lyrics-bg);  color: var(--type-lyrics-fg);  border: 1px solid var(--type-lyrics-bd); }
+    .type-tag.type-member  { background: var(--type-member-bg);  color: var(--type-member-fg);  border: 1px solid var(--type-member-bd); }
+    .type-tag.type-music   { background: var(--type-music-bg);   color: var(--type-music-fg);   border: 1px solid var(--type-music-bd);  }
+    .type-tag.type-episode { background: var(--type-episode-bg); color: var(--type-episode-fg); border: 1px solid var(--type-episode-bd);}
+
+    .question-text {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.55;
+      margin-bottom: 22px;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      margin-bottom: 16px;
+    }
+
+    .option {
+      padding: 15px 16px;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 13px;
+      font-size: 14.5px;
+      line-height: 1.4;
+      cursor: pointer;
+      transition: border-color .15s, background .15s, color .15s;
+      text-align: left;
+      color: var(--text);
+      width: 100%;
+      overflow-wrap: anywhere;
+      word-break: keep-all;
+    }
+    .option:hover:not(:disabled) { border-color: #555; background: var(--surface2); }
+    .option:disabled { cursor: default; }
+
+    .option.correct { background: rgba(34,197,94,.12); border-color: var(--correct); color: var(--correct); font-weight: 700; }
+    .option.wrong   { background: rgba(239,68,68,.12);  border-color: var(--wrong);   color: var(--wrong);   }
+    .option.dimmed  { opacity: .4; }
+
+    /* Episode slide-down */
+    .episode-block {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      padding: 0 16px;
+      margin-bottom: 0;
+      transition: max-height .4s ease, opacity .3s ease, padding .3s ease, margin-bottom .3s ease;
+    }
+    .episode-block.open { max-height: 480px; opacity: 1; padding: 16px; margin-bottom: 16px; }
+
+    .ep-label  { font-size: 10px; font-weight: 800; color: var(--accent); letter-spacing: 2px; margin-bottom: 7px; }
+    .ep-result { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+    .ep-result.correct { color: var(--correct); }
+    .ep-result.wrong   { color: var(--wrong); }
+    .ep-text   { font-size: 13.5px; color: var(--muted); line-height: 1.65; margin-bottom: 10px; }
+    .ep-source { font-size: 12px; color: #555; }
+    .ep-source a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+    .ep-source a:hover { color: var(--muted); }
+
+    #next-btn { margin-top: auto; display: none; }
+
+    /* ══════════════════════════════════════════════
+       RESULTS SCREEN
+    ══════════════════════════════════════════════ */
+    .results-top { text-align: center; padding: 28px 0 32px; }
+    .results-emoji { font-size: 58px; line-height: 1; margin-bottom: 14px; }
+    .results-score { font-size: 52px; font-weight: 900; color: var(--accent); letter-spacing: -2px; margin-bottom: 6px; }
+    .results-grade { font-size: 20px; font-weight: 800; margin-bottom: 5px; }
+    .results-desc  { font-size: 13.5px; color: var(--muted); }
+
+    .breakdown-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+    .breakdown-heading { font-size: 11px; font-weight: 800; color: var(--muted); letter-spacing: 1.8px; margin-bottom: 18px; }
+
+    .bd-row { display: flex; align-items: center; gap: 10px; margin-bottom: 13px; }
+    .bd-row:last-child { margin-bottom: 0; }
+    .bd-label { font-size: 12.5px; color: var(--muted); width: 96px; flex-shrink: 0; }
+    .bd-bar-wrap { flex: 1; height: 7px; background: var(--surface2); border-radius: 99px; overflow: hidden; }
+    .bd-bar-fill { height: 100%; border-radius: 99px; width: 0%; transition: width .7s ease; }
+    .bd-count { font-size: 12.5px; font-weight: 700; color: var(--muted); width: 32px; text-align: right; flex-shrink: 0; }
+
+    .results-actions { display: flex; flex-direction: column; gap: 10px; margin-top: auto; }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(70px);
+      background: var(--surface2);
+      border: 1px solid #444;
+      color: var(--text);
+      padding: 11px 22px;
+      border-radius: 99px;
+      font-size: 13.5px;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: transform .28s cubic-bezier(.34,1.56,.64,1);
+      pointer-events: none;
+      z-index: 99;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ══════════════ HOME ══════════════ -->
+  <div id="screen-home" class="screen active">
+    <div class="home-icon">🎸</div>
+    <div class="home-title">XH Quiz</div>
+    <div class="home-sub">당신은 진짜 플랫봉인가요?</div>
+
+    <div class="info-card">
+      <div class="info-card-label">ABOUT</div>
+      <ul class="info-list">
+        <li>총 10문제, 매 회 AI가 새로 출제</li>
+        <li>멤버 정보 · 에피소드 · 음악 전 분야</li>
+        <li>정답 확인 후 숨겨진 에피소드 공개</li>
+        <li>결과는 SNS에 공유 가능</li>
+      </ul>
+      <div class="type-pills">
+        <span class="pill" style="background:var(--type-lyrics-bg);color:var(--type-lyrics-fg);border:1px solid var(--type-lyrics-bd)">가사 빈칸</span>
+        <span class="pill" style="background:var(--type-member-bg);color:var(--type-member-fg);border:1px solid var(--type-member-bd)">멤버 맞추기</span>
+        <span class="pill" style="background:var(--type-music-bg);color:var(--type-music-fg);border:1px solid var(--type-music-bd)">음악·앨범</span>
+        <span class="pill" style="background:var(--type-episode-bg);color:var(--type-episode-fg);border:1px solid var(--type-episode-bd)">개인·에피소드</span>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" onclick="startQuiz()">퀴즈 시작하기</button>
+  </div>
+
+  <!-- ══════════════ QUIZ ══════════════ -->
+  <div id="screen-quiz" class="screen">
+
+    <!-- AI 문제 생성 중 로딩 -->
+    <div class="quiz-loading" id="quiz-loading">
+      <div class="loading-spinner"></div>
+      <div class="loading-msg">AI가 문제를 만들고 있어요</div>
+      <div class="loading-sub">잠깐만 기다려줘요!</div>
+    </div>
+
+    <!-- 퀴즈 본문 -->
+    <div id="quiz-content">
+      <div class="quiz-header">
+        <div class="quiz-meta">
+          <span class="quiz-progress-label" id="progress-label">1 / 10</span>
+          <span class="quiz-score"          id="score-label">0점</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+        </div>
+      </div>
+
+      <div id="type-tag" class="type-tag type-member">멤버 맞추기</div>
+      <div id="question-text" class="question-text"></div>
+
+      <div class="options" id="options"></div>
+
+      <div class="episode-block" id="episode-block">
+        <div class="ep-label">EPISODE</div>
+        <div class="ep-result" id="ep-result"></div>
+        <div class="ep-text"   id="ep-text"></div>
+        <div class="ep-source" id="ep-source"></div>
+      </div>
+
+      <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()">다음 문제 →</button>
+    </div>
+
+  </div>
+
+  <!-- ══════════════ RESULTS ══════════════ -->
+  <div id="screen-results" class="screen">
+    <div class="results-top">
+      <div class="results-emoji" id="res-emoji">🎸</div>
+      <div class="results-score" id="res-score">0/10</div>
+      <div class="results-grade" id="res-grade"></div>
+      <div class="results-desc"  id="res-desc"></div>
+    </div>
+
+    <div class="breakdown-card">
+      <div class="breakdown-heading">타입별 정답률</div>
+      <div id="breakdown-rows"></div>
+    </div>
+
+    <div class="results-actions">
+      <button class="btn btn-primary"   onclick="shareResult()">결과 공유하기 📋</button>
+      <button class="btn btn-secondary" onclick="startQuiz()">다시하기</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast">클립보드에 복사되었어요! ✓</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   CLAUDE API CONFIG
+═══════════════════════════════════════════════════════ */
+const CLAUDE_API_KEY = "";            // ← 여기에 API 키 입력
+const CLAUDE_MODEL   = "claude-sonnet-4-20250514";
+
+/* ═══════════════════════════════════════════════════════
+   XH 지식 베이스 (프롬프트 컨텍스트)
+═══════════════════════════════════════════════════════ */
+const XH_KNOWLEDGE = `
+[그룹 기본 정보]
+그룹명: Xdinary Heroes (약칭 엑디즈)
+소속: JYP엔터테인먼트 Studio J
+데뷔일: 2021년 12월 6일
+구성: 6인조 보이밴드
+팬덤명 공식: 플랫봉 / 애칭: 연장
+그룹명 의미: Extraordinary Heroes의 줄임말, "누구나 히어로가 될 수 있다"
+
+[멤버 정보]
+건일 (구건일): 포지션 드럼·리더 / 버클리 음대 드럼 장학생 출신 / 체력 멤버 중 1위 / 롤모델 영국 록밴드 MUSE / 종교 개신교 / JYP 입사일 2020.01.20 / DAY6 월드투어 보스턴에서 JYP 스카우트 제안, 버클리 입시곡 'Spain' 드럼 연주로 어필 / 데뷔 준비 다이어트 중 꼬북칩을 가장 그리워함 / 주연이 힘들 때 건일 방으로 찾아와 둘이 함께 울었음 (당시 룸메이트)
+
+정수 (김정수): 포지션 키보드·메인보컬 / MBTI ISFP / 팀 내 "엄마" 포지션 / 롤랜드 팬텀 6 키보드에 "팬더" 이름 붙임 (두 번째 키보드 S88은 이름 없음) / 종교 개신교 / 멤버들 간식 쓰레기 몰래 치워줌
+
+가온 (곽지석): 포지션 리듬기타·보컬 / 멤버 중 유일한 가톨릭 신자 / 6명 중 생일이 6~9월 범위 밖인 유일한 멤버 / JYP 입사 2020년 2월
+
+O.de (오승민): 포지션 신디사이저 / 운동으로 몸 키우는 중 / 종교 개신교 / 멤버 중 JYP 가장 먼저 입사
+
+Jun Han (한형준): 포지션 리드기타·보컬 / 종교 무교 / Fender Jaguar 구매 / JYP 입사일 2021.04.01, 멤버 중 가장 마지막 입사, 입사 한 달 반 만에 합류
+
+주연 (이주연): 포지션 베이스·메인보컬·프론트맨 / 막내 / 대구 출신 / 유튜브에서 '송개팅' 보고 신청해 JYP 입사 / 취미 게임(LoL·포켓몬GO)·애니메이션·슬램덩크 만화 / 좋아하는 밴드 5 Seconds of Summer(루크 헤밍스 팬) / 자신을 한 단어로 표현하면 "흘러간다" / JYP 입사일 2019.11.11
+
+[JYP 입사 순서]
+O.de → 정수 → 주연(2019.11.11) → 건일(2020.01.20) → 가온(2020.02) → Jun Han(2021.04.01)
+
+[그룹 분류]
+줄쟁이(현악기): 가온, Jun Han, 주연
+안줄쟁이(건반·타악): 건일, 정수, O.de
+
+[종교]
+개신교: 건일, 정수, O.de / 가톨릭: 가온 / 무교: Jun Han / 미공개: 주연
+
+[세계관]
+♭form(플랫폼)이라는 온라인 가상합주 공간을 통해 6명이 만나 밴드를 결성했다는 세계관
+시즌1 Happy Death Day: 각자 ♭form을 발견
+시즌2 Test Me: ♭form 베스트 밴드 콘테스트 우승 (예선 탈락 후 조작으로 결승 진출, 조사로 마무리)
+
+[그룹 에피소드]
+- 멤버 전원이 포켓몬GO를 즐겼고 올림픽 공원에서 함께 포켓몬 잡으러 다님
+- 가온만 생일이 6~9월 범위 밖
+`.trim();
+
+/* ═══════════════════════════════════════════════════════
+   FALLBACK 하드코딩 문항 (API 실패 시 사용)
+═══════════════════════════════════════════════════════ */
+const FALLBACK_QUESTIONS = [
+  {
+    type: 'member', typeName: '멤버 맞추기',
+    question: '건일의 포지션과 팀 내 역할은?',
+    options: ['키보드 · 리더', '드럼 · 리더', '드럼 · 메인보컬', '베이스 · 리더'],
+    answer: '드럼 · 리더',
+    episode: null,
+    sourceText: '나무위키 Xdinary Heroes', sourceUrl: 'https://namu.wiki/w/Xdinary%20Heroes'
+  },
+  {
+    type: 'episode', typeName: '개인·에피소드',
+    question: '주연이 JYP에 입사하게 된 계기가 된 프로그램은?',
+    options: ['슈퍼스타K', '미스터리 음악쇼', '송개팅', 'K팝스타'],
+    answer: '송개팅',
+    episode: '유튜브에서 우연히 송개팅을 보고 신청했다. "날 안 뽑으면 누굴 뽑아?"라는 마인드로 합격했고, 여러 기획사 중 JYP의 밴드 연습생 제안을 택했다.',
+    sourceText: '나무위키 주연', sourceUrl: 'https://namu.wiki/w/%EC%A3%BC%EC%97%B0(Xdinary%20Heroes)'
+  },
+  {
+    type: 'episode', typeName: '개인·에피소드',
+    question: '멤버 전원이 함께 즐겼고, 올림픽 공원에서 같이 잡으러 다닌 게임은?',
+    options: ['리그 오브 레전드', '스타크래프트', '포켓몬 GO', '배틀그라운드'],
+    answer: '포켓몬 GO',
+    episode: null,
+    sourceText: '나무위키 Xdinary Heroes', sourceUrl: 'https://namu.wiki/w/Xdinary%20Heroes'
+  },
+  {
+    type: 'music', typeName: '음악·앨범',
+    question: 'Xdinary Heroes의 데뷔일은?',
+    options: ['2021년 11월 8일', '2021년 12월 6일', '2022년 1월 20일', '2021년 10월 25일'],
+    answer: '2021년 12월 6일',
+    episode: null,
+    sourceText: '나무위키 Xdinary Heroes', sourceUrl: 'https://namu.wiki/w/Xdinary%20Heroes'
+  },
+  {
+    type: 'episode', typeName: '개인·에피소드',
+    question: '건일이 JYP 스카우트 자리(보스턴 호텔)에서 연주한 곡은?',
+    options: ['Caravan', 'Take Five', 'Spain', 'In The Mood'],
+    answer: 'Spain',
+    episode: 'DAY6 월드투어 중 보스턴에 있던 JYP 관계자가 연락해 버클리 입시곡이었던 Spain을 포함한 드럼 연주를 했다. 그 자리에 현 Studio J 본부장이 있었다.',
+    sourceText: '나무위키 건일', sourceUrl: 'https://namu.wiki/w/%EA%B1%B4%EC%9D%BC(Xdinary%20Heroes)'
+  },
+  {
+    type: 'member', typeName: '멤버 맞추기',
+    question: '정수의 MBTI는?',
+    options: ['ENFP', 'INTJ', 'ISFP', 'ENTJ'],
+    answer: 'ISFP',
+    episode: '같은 내향형인 Jun Han도 "그냥 쭉 외향형 같다"고 평가. 팀 내 \'엄마\' 포지션으로 멤버들 간식 쓰레기를 몰래 치워주는 사람.',
+    sourceText: '나무위키 정수', sourceUrl: 'https://namu.wiki/w/%EC%A0%95%EC%88%98(Xdinary%20Heroes)'
+  },
+  {
+    type: 'episode', typeName: '개인·에피소드',
+    question: '주연이 연습생 시절 힘들 때 방으로 불러서 함께 울었던 멤버는?',
+    options: ['정수', '가온', '건일', 'Jun Han'],
+    answer: '건일',
+    episode: '회사 벌점제도로 멘탈이 박살난 주연이 건일에게 "형, 얘기 좀 해도 돼요?"라고 했고, 일본 연습생 방에서 갑자기 닭똥 같은 눈물을 흘렸다. 당시 두 사람은 룸메이트였다.',
+    sourceText: '나무위키 주연', sourceUrl: 'https://namu.wiki/w/%EC%A3%BC%EC%97%B0(Xdinary%20Heroes)'
+  },
+  {
+    type: 'episode', typeName: '개인·에피소드',
+    question: '건일이 인터뷰에서 밝힌 롤모델 밴드는?',
+    options: ['Foo Fighters', 'Radiohead', 'MUSE', 'The 1975'],
+    answer: 'MUSE',
+    episode: null,
+    sourceText: '비트튜드 인터뷰', sourceUrl: 'https://magazine.beattitude.kr/special-interview/specialinterview-xdinaryheroes/'
+  },
+  {
+    type: 'episode', typeName: '개인·에피소드',
+    question: '건일이 데뷔 준비 중 다이어트할 때 가장 그리워했다고 밝힌 간식은?',
+    options: ['빼빼로', '허니버터칩', '꼬북칩', '포카칩'],
+    answer: '꼬북칩',
+    episode: '대학 시절 10kg 이상 쪄서 입사 후 다이어트를 해야 했다. "유일한 낙이 집에 가는 길에 과자를 사먹는 것"이었는데, 꼬북칩도 못 먹은 그 과정이 서럽다고 했다.',
+    sourceText: '나무위키 건일', sourceUrl: 'https://namu.wiki/w/%EA%B1%B4%EC%9D%BC(Xdinary%20Heroes)'
+  },
+  {
+    type: 'member', typeName: '멤버 맞추기',
+    question: '멤버 중 가톨릭 신자인 멤버는?',
+    options: ['건일', '가온', '정수', 'O.de'],
+    answer: '가온',
+    episode: '건일·정수·O.de는 개신교, 가온은 가톨릭, Jun Han은 무교, 주연은 미공개. 또한 가온만 생일이 6~9월 범위 밖이다.',
+    sourceText: '나무위키 Xdinary Heroes', sourceUrl: 'https://namu.wiki/w/Xdinary%20Heroes'
+  },
+  {
+    type: 'member', typeName: '멤버 맞추기',
+    question: 'JYP 입사 순서가 올바른 것은?',
+    options: [
+      'O.de → 정수 → 주연 → 건일 → 가온 → Jun Han',
+      '건일 → 정수 → O.de → 주연 → 가온 → Jun Han',
+      '주연 → 건일 → 정수 → O.de → Jun Han → 가온',
+      '정수 → O.de → 건일 → 주연 → Jun Han → 가온'
+    ],
+    answer: 'O.de → 정수 → 주연 → 건일 → 가온 → Jun Han',
+    episode: '주연 입사일 2019.11.11, 건일 2020.01.20, Jun Han이 2021.04.01로 가장 마지막. Jun Han은 입사 한 달 반 만에 합류했다고 밝혔다.',
+    sourceText: '나무위키 Xdinary Heroes', sourceUrl: 'https://namu.wiki/w/Xdinary%20Heroes'
+  },
+  {
+    type: 'episode', typeName: '개인·에피소드',
+    question: '정수가 자신의 키보드(롤랜드 팬텀 6)에 붙여준 이름은?',
+    options: ['팬텀', '팬더', '판다', '이름 없음'],
+    answer: '팬더',
+    episode: '모델명 \'팬텀\'과 어감이 비슷해서 \'팬더\'라는 이름을 붙였다고. 두 번째 키보드인 S88은 아직 이름이 없다.',
+    sourceText: '나무위키 정수', sourceUrl: 'https://namu.wiki/w/%EC%A0%95%EC%88%98(Xdinary%20Heroes)'
+  }
+];
+
+/* ═══════════════════════════════════════════════════════
+   GRADE / TYPE META
+═══════════════════════════════════════════════════════ */
+const GRADES = [
+  { min: 0, max: 3,  emoji: '🌱', label: '연장 입문',   desc: '이제 막 XH를 알아가는 중이에요' },
+  { min: 4, max: 6,  emoji: '🎵', label: '엑디즈 팬',   desc: '엑디즈의 매력에 빠져들고 있어요' },
+  { min: 7, max: 8,  emoji: '🎸', label: '덕후',         desc: '상당한 XH 지식을 갖추고 있어요!' },
+  { min: 9, max: 10, emoji: '🏆', label: '진짜 플랫봉', desc: '당신은 진짜 플랫봉입니다!' }
+];
+
+const TYPE_META = {
+  lyrics:  { label: '가사 빈칸',    color: '#c4b5fd' },
+  member:  { label: '멤버 맞추기',  color: '#6ee7b7' },
+  music:   { label: '음악·앨범',    color: '#fcd34d' },
+  episode: { label: '개인·에피소드', color: '#fda4af' }
+};
+
+/* ═══════════════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════════════ */
+let quiz      = [];
+let idx       = 0;
+let score     = 0;
+let used      = false;
+let typeStats = {};
+
+/* ═══════════════════════════════════════════════════════
+   UTILS
+═══════════════════════════════════════════════════════ */
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({ top: 0 });
+}
+
+function setLoading(on) {
+  document.getElementById('quiz-loading').style.display = on  ? 'flex'  : 'none';
+  document.getElementById('quiz-content').style.display = on  ? 'none'  : 'flex';
+}
+
+/* ═══════════════════════════════════════════════════════
+   토픽 POOL — 각 토픽마다 한 문제 강제 출제
+═══════════════════════════════════════════════════════ */
+const TOPIC_POOL = {
+  member: [
+    { id: 'm01', topic: '건일의 악기(드럼)와 팀 내 역할(리더)' },
+    { id: 'm02', topic: '정수의 MBTI(ISFP)' },
+    { id: 'm03', topic: '정수가 팀 내 "엄마" 포지션인 것' },
+    { id: 'm04', topic: '가온이 멤버 중 유일한 가톨릭 신자인 것' },
+    { id: 'm05', topic: 'O.de의 포지션(신디사이저)' },
+    { id: 'm06', topic: 'Jun Han의 포지션(리드기타)과 종교(무교)' },
+    { id: 'm07', topic: '주연의 포지션(베이스·메인보컬·프론트맨)과 출신지(대구)' },
+    { id: 'm08', topic: '주연이 막내인 것' },
+    { id: 'm09', topic: '줄쟁이(현악기) 멤버: 가온, Jun Han, 주연' },
+    { id: 'm10', topic: '안줄쟁이(건반·타악) 멤버: 건일, 정수, O.de' },
+    { id: 'm11', topic: 'JYP 입사 순서 전체 (O.de→정수→주연→건일→가온→Jun Han)' },
+    { id: 'm12', topic: 'O.de가 멤버 중 JYP 가장 먼저 입사한 것' },
+    { id: 'm13', topic: 'Jun Han이 멤버 중 JYP 가장 마지막 입사(2021.04.01)하고 한 달 반 만에 합류한 것' },
+    { id: 'm14', topic: '주연의 JYP 입사일(2019.11.11)' },
+    { id: 'm15', topic: '건일이 미국 버클리 음대 드럼 장학생 출신인 것' },
+    { id: 'm16', topic: '건일·정수·O.de는 개신교, 가온은 가톨릭, Jun Han은 무교인 것' },
+    { id: 'm17', topic: '가온이 6명 중 생일이 6~9월 범위 밖인 유일한 멤버인 것' },
+  ],
+  episode: [
+    { id: 'e01', topic: '건일이 보스턴 호텔 JYP 스카우트 자리에서 버클리 입시곡 Spain을 연주해 어필한 에피소드' },
+    { id: 'e02', topic: '건일이 데뷔 준비 다이어트 중 꼬북칩을 가장 그리워한 에피소드' },
+    { id: 'e03', topic: '건일의 롤모델 밴드(MUSE)' },
+    { id: 'e04', topic: '건일이 멤버 중 체력 1위인 것' },
+    { id: 'e05', topic: '정수가 롤랜드 팬텀 6 키보드에 "팬더"라는 이름을 붙인 에피소드 (두 번째 S88은 이름 없음)' },
+    { id: 'e06', topic: '정수가 멤버들 간식 쓰레기를 몰래 치워주는 에피소드' },
+    { id: 'e07', topic: '주연이 유튜브에서 송개팅을 우연히 보고 JYP에 입사하게 된 계기' },
+    { id: 'e08', topic: '주연의 취미(LoL, 포켓몬GO, 애니메이션, 슬램덩크 만화)' },
+    { id: 'e09', topic: '주연이 좋아하는 밴드 5 Seconds of Summer와 루크 헤밍스 팬인 것' },
+    { id: 'e10', topic: '주연이 자신을 한 단어로 표현하면 "흘러간다"라고 한 것' },
+    { id: 'e11', topic: '주연이 연습생 시절 힘들 때 룸메이트 건일의 방으로 찾아가 함께 울었던 에피소드' },
+    { id: 'e12', topic: 'Jun Han이 Fender Jaguar 기타를 구매한 것' },
+    { id: 'e13', topic: '멤버 전원이 포켓몬GO를 즐기고 올림픽 공원에서 함께 포켓몬 잡으러 다닌 에피소드' },
+    { id: 'e14', topic: 'O.de가 운동으로 꾸준히 몸을 키우고 있는 것' },
+  ],
+  music: [
+    { id: 'u01', topic: 'Xdinary Heroes의 데뷔일(2021년 12월 6일)' },
+    { id: 'u02', topic: '팬덤 공식 명칭(플랫봉)과 애칭(연장)' },
+    { id: 'u03', topic: '그룹명 Xdinary Heroes의 의미(Extraordinary Heroes 줄임말, "누구나 히어로가 될 수 있다")' },
+    { id: 'u04', topic: 'Xdinary Heroes의 소속사(JYP엔터테인먼트 Studio J)' },
+    { id: 'u05', topic: '세계관 ♭form(플랫폼) - 온라인 가상합주 공간을 통해 6명이 만났다는 설정' },
+    { id: 'u06', topic: '세계관 시즌2 Test Me - ♭form 베스트 밴드 콘테스트 우승 스토리' },
+  ]
+};
+
+/* ═══════════════════════════════════════════════════════
+   토픽 선택 (중복 방지 + sessionStorage 추적)
+═══════════════════════════════════════════════════════ */
+const STORAGE_KEY = 'xhq_used_topics';
+const HISTORY_SIZE = 20;  // 최근 N개 토픽 id는 재출제 안 함
+
+function pickTopics() {
+  let usedIds = [];
+  try { usedIds = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || '[]'); } catch {}
+
+  function pickFrom(pool, n) {
+    const fresh = pool.filter(t => !usedIds.includes(t.id));
+    // 미사용 토픽이 부족하면 가장 오래된 것부터 허용
+    const src = fresh.length >= n ? fresh : pool;
+    return shuffle(src).slice(0, n);
+  }
+
+  const picked = shuffle([
+    ...pickFrom(TOPIC_POOL.member,  3),
+    ...pickFrom(TOPIC_POOL.episode, 4),
+    ...pickFrom(TOPIC_POOL.music,   2),
+    // 10번째: member/episode 중 랜덤
+    ...pickFrom([...TOPIC_POOL.member, ...TOPIC_POOL.episode], 1),
+  ]);
+
+  // 이미 중복 제거된 슬라이스 10개 확보
+  const unique = [...new Map(picked.map(t => [t.id, t])).values()].slice(0, 10);
+
+  // 사용 이력 저장
+  const newUsed = [...usedIds, ...unique.map(t => t.id)].slice(-HISTORY_SIZE);
+  try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify(newUsed)); } catch {}
+
+  return unique;
+}
+
+/* ═══════════════════════════════════════════════════════
+   AI 문제 생성
+═══════════════════════════════════════════════════════ */
+async function generateQuestions() {
+  if (!CLAUDE_API_KEY) return null;
+
+  const topics   = pickTopics();
+  const topicStr = topics.map((t, i) => `${i + 1}. ${t.topic}`).join('\n');
+
+  const controller = new AbortController();
+  const timer      = setTimeout(() => controller.abort(), 25000);
+
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      signal: controller.signal,
+      headers: {
+        "x-api-key":                                 CLAUDE_API_KEY,
+        "anthropic-version":                         "2023-06-01",
+        "content-type":                              "application/json",
+        "anthropic-dangerous-direct-browser-access": "true"
+      },
+      body: JSON.stringify({
+        model:      CLAUDE_MODEL,
+        max_tokens: 2500,
+        system:
+          "당신은 Xdinary Heroes 팬 퀴즈 출제자입니다. " +
+          "주어진 정보와 지정된 토픽을 바탕으로 퀴즈를 만들고, " +
+          "반드시 유효한 JSON 배열만 응답하세요. 설명 텍스트는 절대 포함하지 마세요.",
+        messages: [{
+          role: "user",
+          content:
+`아래 Xdinary Heroes 정보를 바탕으로, 지정된 토픽 순서대로 정확히 10문제를 만들어주세요.
+
+${XH_KNOWLEDGE}
+
+[이번 회차 출제 토픽 — 번호 순서대로 한 문제씩]
+${topicStr}
+
+[출제 규칙]
+- 각 토픽에서 정확히 1문제, 총 10문제
+- 4지선다 (정답 1개 + 그럴듯한 오답 3개)
+- answer는 options 배열 안의 값과 글자 하나까지 완전히 동일
+- type: member / episode / music / lyrics 중 하나
+  토픽 특성에 맞게 자동 분류할 것
+- typeName: "멤버 맞추기" / "개인·에피소드" / "음악·앨범" / "가사 빈칸"
+- episode: 정답 관련 배경 설명 (없으면 null)
+- 문제 순서는 섞어도 됨
+
+[JSON 형식만 출력]
+[{"type":"...","typeName":"...","question":"...","options":["...","...","...","..."],"answer":"...","episode":"...또는 null"}]`
+        }]
+      })
+    });
+
+    clearTimeout(timer);
+    if (!res.ok) return null;
+
+    const data  = await res.json();
+    const text  = data?.content?.[0]?.text?.trim() ?? "";
+    const match = text.match(/\[[\s\S]*\]/);
+    if (!match) return null;
+
+    const parsed = JSON.parse(match[0]);
+    if (!Array.isArray(parsed) || parsed.length < 5) return null;
+
+    const VALID_TYPES = new Set(['member', 'episode', 'music', 'lyrics']);
+    const valid = parsed.filter(q =>
+      q.question &&
+      Array.isArray(q.options) && q.options.length === 4 &&
+      q.answer && q.options.includes(q.answer) &&
+      VALID_TYPES.has(q.type)
+    );
+
+    return valid.length >= 5 ? shuffle(valid).slice(0, 10) : null;
+
+  } catch {
+    clearTimeout(timer);
+    return null;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   QUIZ FLOW
+═══════════════════════════════════════════════════════ */
+async function startQuiz() {
+  score = 0;
+  idx   = 0;
+  used  = false;
+  typeStats = { lyrics:{c:0,t:0}, member:{c:0,t:0}, music:{c:0,t:0}, episode:{c:0,t:0} };
+
+  show('screen-quiz');
+  setLoading(true);
+
+  const aiQuestions = await generateQuestions();
+  quiz = aiQuestions ?? shuffle(FALLBACK_QUESTIONS).slice(0, 10);
+
+  setLoading(false);
+  renderQ();
+}
+
+function renderQ() {
+  const q = quiz[idx];
+  used = false;
+
+  // 헤더
+  document.getElementById('progress-label').textContent = `${idx + 1} / ${quiz.length}`;
+  document.getElementById('score-label').textContent    = `${score}점`;
+  document.getElementById('progress-fill').style.width  = `${(idx / quiz.length) * 100}%`;
+
+  // 타입 태그
+  const tag = document.getElementById('type-tag');
+  tag.textContent = q.typeName ?? '퀴즈';
+  tag.className   = `type-tag type-${q.type ?? 'member'}`;
+
+  // 문제
+  document.getElementById('question-text').textContent = q.question;
+
+  // 에피소드 블록 초기화
+  document.getElementById('episode-block').classList.remove('open');
+
+  // 다음 버튼
+  const nb = document.getElementById('next-btn');
+  nb.style.display = 'none';
+  nb.textContent   = idx === quiz.length - 1 ? '결과 보기 →' : '다음 문제 →';
+
+  // 선택지 렌더
+  const container = document.getElementById('options');
+  container.innerHTML = '';
+  shuffle(q.options).forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.textContent = opt;
+    btn.onclick = () => pick(opt, btn);
+    container.appendChild(btn);
+  });
+}
+
+function pick(selected, btn) {
+  if (used) return;
+  used = true;
+
+  const q       = quiz[idx];
+  const correct = selected === q.answer;
+
+  // 통계
+  const type = q.type ?? 'member';
+  if (!typeStats[type]) typeStats[type] = {c:0, t:0};
+  typeStats[type].t++;
+  if (correct) { score++; typeStats[type].c++; }
+
+  // 선택지 스타일
+  document.querySelectorAll('.option').forEach(b => {
+    b.disabled = true;
+    if (b.textContent === q.answer)       b.classList.add('correct');
+    else if (b === btn && !correct)       b.classList.add('wrong');
+    else                                  b.classList.add('dimmed');
+  });
+
+  // 에피소드 블록
+  const epResult = document.getElementById('ep-result');
+  epResult.className   = `ep-result ${correct ? 'correct' : 'wrong'}`;
+  epResult.textContent = correct
+    ? '✓ 정답이에요!'
+    : `✗ 오답 — 정답은 "${q.answer}"`;
+
+  const epText = document.getElementById('ep-text');
+  epText.textContent    = q.episode ?? '';
+  epText.style.display  = q.episode ? 'block' : 'none';
+
+  const src = document.getElementById('ep-source');
+  if (q.sourceUrl) {
+    src.innerHTML = `출처: <a href="${q.sourceUrl}" target="_blank" rel="noopener noreferrer">${q.sourceText}</a>`;
+  } else if (q.sourceText) {
+    src.textContent = `출처: ${q.sourceText}`;
+  } else {
+    src.textContent = '';
+  }
+
+  requestAnimationFrame(() =>
+    document.getElementById('episode-block').classList.add('open')
+  );
+
+  document.getElementById('next-btn').style.display = 'block';
+}
+
+function nextQuestion() {
+  idx++;
+  idx >= quiz.length ? showResults() : renderQ();
+}
+
+/* ═══════════════════════════════════════════════════════
+   RESULTS
+═══════════════════════════════════════════════════════ */
+function showResults() {
+  show('screen-results');
+
+  const grade = GRADES.find(g => score >= g.min && score <= g.max);
+  document.getElementById('res-emoji').textContent = grade.emoji;
+  document.getElementById('res-score').textContent = `${score}/10`;
+  document.getElementById('res-grade').textContent = grade.label;
+  document.getElementById('res-desc').textContent  = grade.desc;
+
+  const rows = document.getElementById('breakdown-rows');
+  rows.innerHTML = '';
+  Object.entries(typeStats).forEach(([type, s]) => {
+    if (s.t === 0) return;
+    const meta = TYPE_META[type] ?? { label: type, color: '#888' };
+    const pct  = Math.round((s.c / s.t) * 100);
+    const row  = document.createElement('div');
+    row.className = 'bd-row';
+    row.innerHTML = `
+      <span class="bd-label">${meta.label}</span>
+      <div class="bd-bar-wrap">
+        <div class="bd-bar-fill" style="background:${meta.color}" data-pct="${pct}"></div>
+      </div>
+      <span class="bd-count">${s.c}/${s.t}</span>`;
+    rows.appendChild(row);
+  });
+
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    document.querySelectorAll('.bd-bar-fill').forEach(b => {
+      b.style.width = b.dataset.pct + '%';
+    });
+  }));
+}
+
+/* ═══════════════════════════════════════════════════════
+   SHARE
+═══════════════════════════════════════════════════════ */
+function shareResult() {
+  const grade    = GRADES.find(g => score >= g.min && score <= g.max);
+  const typeLine = Object.entries(typeStats)
+    .filter(([, s]) => s.t > 0)
+    .map(([t, s]) => `${TYPE_META[t]?.label ?? t} ${s.c}/${s.t}`)
+    .join(' · ');
+
+  // 배포 후 실제 Netlify URL로 교체하세요
+  const SITE_URL = 'https://xhquiz.netlify.app';
+
+  const text =
+`🎸 Xdinary Heroes 퀴즈 결과
+10문제 중 ${score}문제 정답!
+등급: ${grade.label}
+${typeLine}
+나도 도전 → ${SITE_URL}
+#XdinaryHeroes #엑디즈 #XHQuiz`;
+
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(showToast).catch(() => fallbackShare(text));
+  } else {
+    fallbackShare(text);
+  }
+}
+
+function fallbackShare(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0';
+  document.body.appendChild(ta);
+  ta.select();
+  document.execCommand('copy');
+  document.body.removeChild(ta);
+  showToast();
+}
+
+function showToast() {
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+</script>
+</body>
+</html>
