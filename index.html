@@ -243,6 +243,31 @@
     .option.wrong   { background: rgba(239,68,68,.12);  border-color: var(--wrong);   color: var(--wrong);   }
     .option.dimmed  { opacity: .4; }
 
+    /* ── 주관식 ──────────────────────────────── */
+    .sa-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .sa-input {
+      width: 100%;
+      padding: 15px 16px;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 13px;
+      font-size: 15px;
+      color: var(--text);
+      outline: none;
+      font-family: inherit;
+      transition: border-color .15s;
+    }
+    .sa-input::placeholder { color: var(--muted); }
+    .sa-input:focus:not(:disabled) { border-color: var(--accent); }
+    .sa-input.correct { border-color: var(--correct); background: rgba(34,197,94,.12); color: var(--correct); font-weight: 700; }
+    .sa-input.wrong   { border-color: var(--wrong);   background: rgba(239,68,68,.12); color: var(--wrong); }
+    .sa-input:disabled { cursor: default; }
+
     /* Episode slide-down */
     .episode-block {
       background: var(--surface);
@@ -371,6 +396,11 @@
 
       <div class="options" id="options"></div>
 
+      <div class="sa-wrap" id="sa-wrap" style="display:none">
+        <input type="text" id="sa-input" class="sa-input" placeholder="정답을 입력하세요">
+        <button class="btn btn-primary" id="sa-submit" onclick="submitSA()">제출하기</button>
+      </div>
+
       <div class="episode-block" id="episode-block">
         <div class="ep-label">EPISODE</div>
         <div class="ep-result" id="ep-result"></div>
@@ -457,6 +487,32 @@ O.de → 정수 → 주연(2019.11.11) → 건일(2020.01.20) → 가온(2020.02
 [그룹 에피소드]
 - 멤버 전원이 포켓몬GO를 즐겼고 올림픽 공원에서 함께 포켓몬 잡으러 다님
 - 가온만 생일이 6~9월 범위 밖
+
+[멤버 간 케미 (2인)]
+- 부부즈: 건일 & 정수 / 정수 피셜 "멤버들이 모르는 부부케미". 월말평가 때 건일을 꼭 안고 들어가면 결과가 좋다는 징크스 → 무대 전 포옹 루틴으로 이어짐
+- 오구오구즈: 건일(구건일) & O.de(오승민) / 본명 이름 조합
+- 메댄즈: 건일 & Jun Han / 팀 내 메인댄서 자리를 서로에게 양보하는 콤비
+- 리듬즈/맏막즈: 건일 & 주연 / 리듬즈=드럼+베이스, 맏막즈=맏형+막내
+- 온수즈/정지: 정수 & 가온(곽지석) / 가온이 정수에게 형/이름을 자유롭게 오감. 둘 다 십이간지 같은 띠. 제주도 여행, 영화 등 사적으로도 친밀
+- 건반쪽즈: 정수 & O.de / 건반 담당 둘. 둘 다 JYP 댄스팀 → 밴드팀으로 함께 전환한 공통점
+- 아이(I)들/빵떡즈: 정수 & Jun Han / MBTI 둘 다 I(내향형). 빵떡=정수, 락더월드 무대에서 Jun Han이 정수를 "빵떡이"라고 부른 데서 유래
+- 메보즈/막둥즈/노이즈: 정수 & 주연 / 노이즈는 O.de가 "둘이 같이 있으면 시끄럽다"며 직접 지어줌. 짭막둥이(정수)+찐막둥이(주연)
+- 딸케즈: 가온 & O.de / Highlight Film의 Strawberry Cake 장면 연기에서 유래
+- 기타즈/앞니즈: 가온 & Jun Han / 기타 담당 둘
+- 너겟즈: 가온 & 주연 / ENxP MBTI 조합. 매콤스노윙치킨 7일 연속 먹음. 가온 첫 방문 때 주연이 먼저 말 걸어준 인연. "가온과 주연의 너겟타임" 진행
+- 톰과 제리/입막즈: O.de & 주연 / 건일 피셜 톰=O.de·제리=주연. O.de가 주연 입을 막는 장면 자주 포착. O.de가 아침마다 주연 깨워줌
+- 덕후즈/개밥즈: Jun Han & 주연 / 덕후즈=만화 좋아하는 덕후들. 개밥즈=꽃남이(주연 반려견) 야채를 Jun Han이 주연이 훔쳐먹은 줄 착각한 에피소드에서 유래
+
+[멤버 간 케미 (3인 이상)]
+- 줄쟁이즈/가준주: 가온 & Jun Han & 주연 / 현악기 담당 셋
+- 안줄쟁이즈: 건일 & 정수 & O.de / 건반·타악기 담당 셋
+- 건정지: 건일 & 정수 & 가온(지석) / 이름 조합
+- 곽정민씨/오온수/정지승: 정수 & 가온 & O.de / 곽가온+김정수+오승민 조합. 팬미팅에서 공식 케미명 곽정민씨로 결정
+- 드가연: 가온 & O.de & 주연 / 오드+가온+주연 조합. "드~가연!" 구호 있음. 셋이 있으면 잼민이로 돌아가는 조합(주연 피셜)
+- 스튜디오 JJJ/쟤네즈: 정수 & 가온 & 주연 / 세 멤버 이름에 J가 있음. DAY6 KTRK 출연
+- 토파즈: 건일 & Jun Han & 주연 / 볼링·게임 약속이 자꾸 파토 → "파토즈"를 예쁘게 바꾼 이름
+- 02즈: 가온 & O.de & Jun Han & 주연 / 2002년생 동갑 4인방
+- 건정지승: 건일 & 정수 & 가온 & O.de / 건일+정수+지석+승민 이름 조합
 `.trim();
 
 /* ═══════════════════════════════════════════════════════
@@ -771,6 +827,208 @@ const FALLBACK_QUESTIONS = [
     options: ['Happy Death Day', 'Test Me', 'Villain', 'Hero Maker'],
     answer: 'Test Me',
     episode: '♭form 베스트 밴드 콘테스트 우승 스토리. 예선 탈락 후 조작으로 결승 진출, 이후 조사로 마무리.'
+  },
+  // ── 케미 (4지선다) ───────────────────────────────
+  {
+    id: 'f_c01',
+    type: 'episode', typeName: '멤버 케미',
+    question: '건일 & 정수 케미명은?',
+    options: ['건반쪽즈', '오구오구즈', '부부즈', '메댄즈'],
+    answer: '부부즈',
+    episode: '정수 피셜 "멤버들이 모르는 부부케미". 월말평가 때 건일을 꼭 안고 들어가면 결과가 좋다는 징크스 → 지금도 무대 전 포옹 루틴.'
+  },
+  {
+    id: 'f_c02',
+    type: 'episode', typeName: '멤버 케미',
+    question: '가온 & 주연 케미명은?',
+    options: ['기타즈', '너겟즈', '드가연', '딸케즈'],
+    answer: '너겟즈',
+    episode: 'ENxP MBTI 조합. 매콤스노윙치킨 7일 연속, "가온과 주연의 너겟타임" 진행.'
+  },
+  {
+    id: 'f_c03',
+    type: 'episode', typeName: '멤버 케미',
+    question: '정수 & O.de 케미명의 유래는?',
+    options: ['둘 다 기타 담당', '둘 다 JYP 댄스팀→밴드팀 전환', '둘 다 2002년생', '둘 다 내향형 MBTI'],
+    answer: '둘 다 JYP 댄스팀→밴드팀 전환',
+    episode: '케미명은 건반쪽즈. 서로를 서로의 반쪽이라 표현.'
+  },
+  {
+    id: 'f_c04',
+    type: 'episode', typeName: '멤버 케미',
+    question: '건일 피셜 "톰과 제리" 케미에서 톰은 누구?',
+    options: ['건일', '정수', 'O.de', 'Jun Han'],
+    answer: 'O.de',
+    episode: 'O.de=톰, 주연=제리. O.de가 주연 입을 막는 장면이 자주 포착 → 입막즈라는 케미명도 있음.'
+  },
+  {
+    id: 'f_c05',
+    type: 'episode', typeName: '멤버 케미',
+    question: '2002년생 동갑 4인방 케미명은?',
+    options: ['건정지승', '02즈', '드가연', '줄쟁이즈'],
+    answer: '02즈',
+    episode: '가온·O.de·Jun Han·주연 네 멤버가 모두 2002년생.'
+  },
+  {
+    id: 'f_c06',
+    type: 'episode', typeName: '멤버 케미',
+    question: '"노이즈"라는 케미명을 직접 지어준 멤버는?',
+    options: ['건일', '가온', 'O.de', 'Jun Han'],
+    answer: 'O.de',
+    episode: '정수 & 주연 조합. "둘이 같이 있으면 시끄럽다"며 O.de가 직접 지어줬다.'
+  },
+  {
+    id: 'f_c07',
+    type: 'episode', typeName: '멤버 케미',
+    question: '"토파즈" 케미명의 멤버 조합은?',
+    options: ['건일·정수·가온', '건일·Jun Han·주연', '가온·O.de·주연', '정수·가온·O.de'],
+    answer: '건일·Jun Han·주연',
+    episode: '볼링·게임 약속이 자꾸 파토되어 "파토즈"로 부르려다 어감이 세서 "토파즈"로 바꿈.'
+  },
+  {
+    id: 'f_c08',
+    type: 'episode', typeName: '멤버 케미',
+    question: '"개밥즈" 케미명의 유래가 된 에피소드 속 주연의 반려견 이름은?',
+    options: ['뭉치', '초코', '꽃남이', '콩이'],
+    answer: '꽃남이',
+    episode: 'Jun Han & 주연 케미. 꽃남이가 야채를 먹는 걸 Jun Han이 주연이 개밥 훔쳐먹은 줄 착각한 에피소드.'
+  },
+  {
+    id: 'f_c09',
+    type: 'episode', typeName: '멤버 케미',
+    question: '"빵떡즈"에서 빵떡이는 누구이고, 어느 무대에서 유래했나?',
+    options: ['Jun Han · 쇼챔피언', '정수 · 락더월드', 'O.de · 락더월드', '주연 · 쇼챔피언'],
+    answer: '정수 · 락더월드',
+    episode: '락더월드 무대 중 Jun Han이 정수를 보고 "빵떡이"라고 부른 데서 유래. 정수 & Jun Han 케미.'
+  },
+  {
+    id: 'f_c10',
+    type: 'episode', typeName: '멤버 케미',
+    question: '정수 & 가온 케미에서 가온이 정수를 "형"과 이름 둘 다 부르는 이유는?',
+    options: ['가온이 정수보다 나이가 많아서', '둘이 십이간지 띠가 같아서', '가온이 정수를 존경해서', '정수가 원래 반말을 허용해서'],
+    answer: '둘이 십이간지 띠가 같아서',
+    episode: '가온은 2002년 1월생, 정수는 2001년생으로 십이간지 띠가 같다. 케미명은 온수즈/정지.'
+  },
+  // ── 주관식 (mode: 'sa') ───────────────────────────
+  {
+    id: 'sa_01', mode: 'sa',
+    type: 'member', typeName: '멤버 맞추기',
+    question: '건일의 포지션(악기)은?',
+    answer: '드럼', answers: ['드럼', 'drum'],
+    episode: '건일은 드럼을 담당하며 팀의 리더이기도 하다.'
+  },
+  {
+    id: 'sa_02', mode: 'sa',
+    type: 'member', typeName: '멤버 맞추기',
+    question: '주연의 출신 도시는?',
+    answer: '대구', answers: ['대구'],
+    episode: null
+  },
+  {
+    id: 'sa_03', mode: 'sa',
+    type: 'episode', typeName: '개인·에피소드',
+    question: '정수가 자신의 키보드(롤랜드 팬텀 6)에 붙여준 이름은?',
+    answer: '팬더', answers: ['팬더'],
+    episode: '모델명 \'팬텀\'과 어감이 비슷해서 \'팬더\'라고 이름 붙였다.'
+  },
+  {
+    id: 'sa_04', mode: 'sa',
+    type: 'episode', typeName: '개인·에피소드',
+    question: '건일이 JYP 스카우트 자리에서 연주한 곡 제목은?',
+    answer: 'Spain', answers: ['spain', 'Spain', '스페인'],
+    episode: 'DAY6 보스턴 공연 중 JYP 관계자를 만나 버클리 입시곡 Spain을 연주해 어필했다.'
+  },
+  {
+    id: 'sa_05', mode: 'sa',
+    type: 'episode', typeName: '개인·에피소드',
+    question: '주연이 JYP 입사 계기가 된 유튜브 프로그램 이름은?',
+    answer: '송개팅', answers: ['송개팅'],
+    episode: '"날 안 뽑으면 누굴 뽑아?"라는 마인드로 지원해 합격했다.'
+  },
+  {
+    id: 'sa_06', mode: 'sa',
+    type: 'music', typeName: '음악·앨범',
+    question: 'Xdinary Heroes 공식 팬덤명은?',
+    answer: '플랫봉', answers: ['플랫봉'],
+    episode: '응원봉 공식 명칭도 플랫봉, 팬덤 애칭은 연장.'
+  },
+  {
+    id: 'sa_07', mode: 'sa',
+    type: 'episode', typeName: '개인·에피소드',
+    question: '건일이 밝힌 롤모델 밴드 이름은?',
+    answer: 'MUSE', answers: ['muse', 'MUSE', '뮤즈'],
+    episode: null
+  },
+  {
+    id: 'sa_08', mode: 'sa',
+    type: 'member', typeName: '멤버 맞추기',
+    question: '정수의 MBTI는?',
+    answer: 'ISFP', answers: ['isfp', 'ISFP'],
+    episode: '팀 내 \'엄마\' 포지션.'
+  },
+  {
+    id: 'sa_09', mode: 'sa',
+    type: 'member', typeName: '멤버 맞추기',
+    question: 'Xdinary Heroes에서 막내 멤버의 이름은?',
+    answer: '주연', answers: ['주연', '이주연'],
+    episode: null
+  },
+  {
+    id: 'sa_10', mode: 'sa',
+    type: 'music', typeName: '음악·앨범',
+    question: 'Xdinary Heroes의 데뷔 연도는?',
+    answer: '2021년', answers: ['2021', '2021년'],
+    episode: '정확한 데뷔일은 2021년 12월 6일.'
+  },
+  {
+    id: 'sa_11', mode: 'sa',
+    type: 'episode', typeName: '개인·에피소드',
+    question: 'Jun Han이 구매한 기타 모델은? (브랜드+모델명)',
+    answer: 'Fender Jaguar', answers: ['fender jaguar', 'fenderjaguar', '펜더재규어', '펜더 재규어', 'Fender Jaguar'],
+    episode: null
+  },
+  {
+    id: 'sa_12', mode: 'sa',
+    type: 'member', typeName: '멤버 맞추기',
+    question: '6명 중 JYP에 가장 먼저 입사한 멤버는?',
+    answer: 'O.de', answers: ['o.de', 'ode', 'O.de', '오드', '오승민'],
+    episode: null
+  },
+  // ── 케미 주관식 ───────────────────────────────────
+  {
+    id: 'sa_c01', mode: 'sa',
+    type: 'episode', typeName: '멤버 케미',
+    question: '건일 & 정수 케미명은?',
+    answer: '부부즈', answers: ['부부즈'],
+    episode: '정수 피셜 "멤버들이 모르는 부부케미". 무대 전 포옹 루틴으로 이어짐.'
+  },
+  {
+    id: 'sa_c02', mode: 'sa',
+    type: 'episode', typeName: '멤버 케미',
+    question: '가온 & 주연 케미명은?',
+    answer: '너겟즈', answers: ['너겟즈'],
+    episode: 'ENxP 조합. "가온과 주연의 너겟타임" 진행.'
+  },
+  {
+    id: 'sa_c03', mode: 'sa',
+    type: 'episode', typeName: '멤버 케미',
+    question: '정수 & O.de 케미명은?',
+    answer: '건반쪽즈', answers: ['건반쪽즈'],
+    episode: '둘 다 건반 담당이며 JYP 댄스팀→밴드팀으로 함께 전환한 공통점.'
+  },
+  {
+    id: 'sa_c04', mode: 'sa',
+    type: 'episode', typeName: '멤버 케미',
+    question: '2002년생 동갑 4인방 케미명은?',
+    answer: '02즈', answers: ['02즈', '공이즈'],
+    episode: '가온·O.de·Jun Han·주연.'
+  },
+  {
+    id: 'sa_c05', mode: 'sa',
+    type: 'episode', typeName: '멤버 케미',
+    question: 'O.de & 주연 케미명 중, O.de가 주연 입을 막는 장면에서 유래한 이름은?',
+    answer: '입막즈', answers: ['입막즈'],
+    episode: 'O.de & 주연의 또 다른 케미명은 "톰과 제리" (건일 피셜 O.de=톰, 주연=제리).'
   }
 ];
 
@@ -864,11 +1122,23 @@ const TOPIC_POOL = {
   ],
   music: [
     { id: 'u01', topic: 'Xdinary Heroes의 데뷔일(2021년 12월 6일)' },
-    { id: 'u02', topic: '팬덤 공식 명칭(플랫봉)과 애칭(연장)' },
+    { id: 'u02', topic: '팬덤 공식 명칭(플랫봉)과 애칭(연장), 응원봉 공식 명칭(플랫봉)' },
     { id: 'u03', topic: '그룹명 Xdinary Heroes의 의미(Extraordinary Heroes 줄임말, "누구나 히어로가 될 수 있다")' },
     { id: 'u04', topic: 'Xdinary Heroes의 소속사(JYP엔터테인먼트 Studio J)' },
     { id: 'u05', topic: '세계관 ♭form(플랫폼) - 온라인 가상합주 공간을 통해 6명이 만났다는 설정' },
     { id: 'u06', topic: '세계관 시즌2 Test Me - ♭form 베스트 밴드 콘테스트 우승 스토리' },
+  ],
+  chemi: [
+    { id: 'c01', topic: '건일&정수 케미 부부즈 - 월말평가 포옹 징크스' },
+    { id: 'c02', topic: '가온&주연 케미 너겟즈 - 너겟타임, 매콤스노윙치킨 7일' },
+    { id: 'c03', topic: '정수&O.de 케미 건반쪽즈 - JYP 댄스팀→밴드팀 전환 공통점' },
+    { id: 'c04', topic: 'O.de&주연 케미 톰과제리/입막즈 - O.de가 주연 입막는 장면, 아침 케어' },
+    { id: 'c05', topic: 'Jun Han&주연 케미 덕후즈/개밥즈 - 꽃남이 야채 오해 에피소드' },
+    { id: 'c06', topic: '정수&Jun Han 케미 빵떡즈 - 락더월드 빵떡이 유래' },
+    { id: 'c07', topic: '정수&주연 케미 노이즈 - O.de가 "시끄럽다"며 직접 지어줌' },
+    { id: 'c08', topic: '2002년생 동갑 4인방 케미 02즈 (가온·O.de·Jun Han·주연)' },
+    { id: 'c09', topic: '토파즈 케미 (건일·Jun Han·주연) - 파토즈에서 토파즈로' },
+    { id: 'c10', topic: '정수&가온 케미 온수즈/정지 - 십이간지 띠가 같아 형/이름 혼용' },
   ]
 };
 
@@ -890,11 +1160,10 @@ function pickTopics() {
   }
 
   const picked = shuffle([
-    ...pickFrom(TOPIC_POOL.member,  3),
-    ...pickFrom(TOPIC_POOL.episode, 4),
+    ...pickFrom(TOPIC_POOL.member,  2),
+    ...pickFrom(TOPIC_POOL.episode, 3),
     ...pickFrom(TOPIC_POOL.music,   2),
-    // 10번째: member/episode 중 랜덤
-    ...pickFrom([...TOPIC_POOL.member, ...TOPIC_POOL.episode], 1),
+    ...pickFrom(TOPIC_POOL.chemi,   3),
   ]);
 
   // 이미 중복 제거된 슬라이스 10개 확보
@@ -910,21 +1179,33 @@ function pickTopics() {
 /* ═══════════════════════════════════════════════════════
    FALLBACK 중복 방지 선택
 ═══════════════════════════════════════════════════════ */
-const FB_STORAGE_KEY  = 'xhq_used_fallbacks';
+const FB_MC_KEY = 'xhq_used_mc';
+const FB_SA_KEY = 'xhq_used_sa';
 const FB_HISTORY_SIZE = 30;
 
-function pickFallbackQuestions() {
+function pickFromPool(pool, storageKey, n) {
   let usedIds = [];
-  try { usedIds = JSON.parse(localStorage.getItem(FB_STORAGE_KEY) || '[]'); } catch {}
+  try { usedIds = JSON.parse(localStorage.getItem(storageKey) || '[]'); } catch {}
 
-  const fresh = FALLBACK_QUESTIONS.filter(q => !usedIds.includes(q.id));
-  const src   = fresh.length >= 10 ? fresh : FALLBACK_QUESTIONS;
-  const picked = shuffle(src).slice(0, 10);
+  const fresh = pool.filter(q => !usedIds.includes(q.id));
+  const src   = fresh.length >= n ? fresh : pool;
+  const picked = shuffle(src).slice(0, n);
 
   const newUsed = [...usedIds, ...picked.map(q => q.id)].slice(-FB_HISTORY_SIZE);
-  try { localStorage.setItem(FB_STORAGE_KEY, JSON.stringify(newUsed)); } catch {}
+  try { localStorage.setItem(storageKey, JSON.stringify(newUsed)); } catch {}
 
   return picked;
+}
+
+function pickFallbackQuestions() {
+  const mcPool = FALLBACK_QUESTIONS.filter(q => q.mode !== 'sa');
+  const saPool = FALLBACK_QUESTIONS.filter(q => q.mode === 'sa');
+
+  // 4지선다 6문제, 주관식 4문제
+  const mcPicked = pickFromPool(mcPool, FB_MC_KEY, 6);
+  const saPicked = pickFromPool(saPool, FB_SA_KEY, 4);
+
+  return shuffle([...mcPicked, ...saPicked]);
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -968,16 +1249,19 @@ ${topicStr}
 
 [출제 규칙]
 - 각 토픽에서 정확히 1문제, 총 10문제
-- 4지선다 (정답 1개 + 그럴듯한 오답 3개)
-- answer는 options 배열 안의 값과 글자 하나까지 완전히 동일
-- type: member / episode / music / lyrics 중 하나
-  토픽 특성에 맞게 자동 분류할 것
-- typeName: "멤버 맞추기" / "개인·에피소드" / "음악·앨범" / "가사 빈칸"
+- 10문제 중 6문제는 4지선다(mode:"mc"), 4문제는 주관식(mode:"sa")으로 만들 것
+- 4지선다: options 배열 4개 포함, answer는 options 중 하나와 완전히 동일
+- 주관식: options 생략, answers 배열에 정답으로 인정할 표현들 포함 (예: ["Spain","spain","스페인"])
+- type: member / episode / music / lyrics 중 하나 (케미 토픽은 episode로 분류)
+- typeName: "멤버 맞추기" / "개인·에피소드" / "음악·앨범" / "가사 빈칸" / "멤버 케미"
 - episode: 정답 관련 배경 설명 (없으면 null)
 - 문제 순서는 섞어도 됨
 
-[JSON 형식만 출력]
-[{"type":"...","typeName":"...","question":"...","options":["...","...","...","..."],"answer":"...","episode":"...또는 null"}]`
+[JSON 형식만 출력 — mc 예시]
+{"mode":"mc","type":"episode","typeName":"개인·에피소드","question":"...","options":["...","...","...","..."],"answer":"...","episode":"...또는 null"}
+[sa 예시]
+{"mode":"sa","type":"member","typeName":"멤버 맞추기","question":"...","answers":["정답1","정답1영문"],"answer":"정답1","episode":"...또는 null"}
+전체 배열로 출력: [...]`
         }]
       })
     });
@@ -994,12 +1278,11 @@ ${topicStr}
     if (!Array.isArray(parsed) || parsed.length < 5) return null;
 
     const VALID_TYPES = new Set(['member', 'episode', 'music', 'lyrics']);
-    const valid = parsed.filter(q =>
-      q.question &&
-      Array.isArray(q.options) && q.options.length === 4 &&
-      q.answer && q.options.includes(q.answer) &&
-      VALID_TYPES.has(q.type)
-    );
+    const valid = parsed.filter(q => {
+      if (!q.question || !VALID_TYPES.has(q.type)) return false;
+      if (q.mode === 'sa') return Array.isArray(q.answers) && q.answers.length > 0 && q.answer;
+      return Array.isArray(q.options) && q.options.length === 4 && q.answer && q.options.includes(q.answer);
+    });
 
     return valid.length >= 5 ? shuffle(valid).slice(0, 10) : null;
 
@@ -1053,24 +1336,36 @@ function renderQ() {
   nb.style.display = 'none';
   nb.textContent   = idx === quiz.length - 1 ? '결과 보기 →' : '다음 문제 →';
 
-  // 선택지 렌더
-  const container = document.getElementById('options');
-  container.innerHTML = '';
-  shuffle(q.options).forEach(opt => {
-    const btn = document.createElement('button');
-    btn.className = 'option';
-    btn.textContent = opt;
-    btn.onclick = () => pick(opt, btn);
-    container.appendChild(btn);
-  });
+  // 4지선다 / 주관식 분기
+  const isSA = q.mode === 'sa';
+  document.getElementById('options').style.display  = isSA ? 'none' : '';
+  document.getElementById('sa-wrap').style.display  = isSA ? 'flex' : 'none';
+
+  if (isSA) {
+    const inp = document.getElementById('sa-input');
+    inp.value     = '';
+    inp.disabled  = false;
+    inp.className = 'sa-input';
+    const sub = document.getElementById('sa-submit');
+    sub.disabled  = false;
+    sub.textContent = '제출하기';
+    inp.onkeydown = e => { if (e.key === 'Enter') submitSA(); };
+    requestAnimationFrame(() => inp.focus());
+  } else {
+    const container = document.getElementById('options');
+    container.innerHTML = '';
+    shuffle(q.options).forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className   = 'option';
+      btn.textContent = opt;
+      btn.onclick     = () => pick(opt, btn);
+      container.appendChild(btn);
+    });
+  }
 }
 
-function pick(selected, btn) {
-  if (used) return;
-  used = true;
-
-  const q       = quiz[idx];
-  const correct = selected === q.answer;
+function showResult(correct) {
+  const q = quiz[idx];
 
   // 통계
   const type = q.type ?? 'member';
@@ -1078,24 +1373,14 @@ function pick(selected, btn) {
   typeStats[type].t++;
   if (correct) { score++; typeStats[type].c++; }
 
-  // 선택지 스타일
-  document.querySelectorAll('.option').forEach(b => {
-    b.disabled = true;
-    if (b.textContent === q.answer)       b.classList.add('correct');
-    else if (b === btn && !correct)       b.classList.add('wrong');
-    else                                  b.classList.add('dimmed');
-  });
-
   // 에피소드 블록
   const epResult = document.getElementById('ep-result');
   epResult.className   = `ep-result ${correct ? 'correct' : 'wrong'}`;
-  epResult.textContent = correct
-    ? '✓ 정답이에요!'
-    : `✗ 오답 — 정답은 "${q.answer}"`;
+  epResult.textContent = correct ? '✓ 정답이에요!' : `✗ 오답 — 정답은 "${q.answer}"`;
 
   const epText = document.getElementById('ep-text');
-  epText.textContent    = q.episode ?? '';
-  epText.style.display  = q.episode ? 'block' : 'none';
+  epText.textContent   = q.episode ?? '';
+  epText.style.display = q.episode ? 'block' : 'none';
 
   const src = document.getElementById('ep-source');
   if (q.sourceUrl) {
@@ -1109,8 +1394,47 @@ function pick(selected, btn) {
   requestAnimationFrame(() =>
     document.getElementById('episode-block').classList.add('open')
   );
-
   document.getElementById('next-btn').style.display = 'block';
+
+  // 점수 업데이트
+  document.getElementById('score-label').textContent = `${score}점`;
+}
+
+function pick(selected, btn) {
+  if (used) return;
+  used = true;
+
+  const q       = quiz[idx];
+  const correct = selected === q.answer;
+
+  document.querySelectorAll('.option').forEach(b => {
+    b.disabled = true;
+    if (b.textContent === q.answer)  b.classList.add('correct');
+    else if (b === btn && !correct)  b.classList.add('wrong');
+    else                             b.classList.add('dimmed');
+  });
+
+  showResult(correct);
+}
+
+function submitSA() {
+  if (used) return;
+  const inp = document.getElementById('sa-input');
+  const raw = inp.value.trim();
+  if (!raw) return;
+  used = true;
+
+  const q       = quiz[idx];
+  const norm    = s => s.trim().toLowerCase().replace(/\s+/g, '');
+  const userN   = norm(raw);
+  const accept  = (q.answers ?? [q.answer]).map(norm);
+  const correct = accept.includes(userN);
+
+  inp.disabled  = true;
+  inp.classList.add(correct ? 'correct' : 'wrong');
+  document.getElementById('sa-submit').disabled = true;
+
+  showResult(correct);
 }
 
 function nextQuestion() {
