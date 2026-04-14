@@ -423,7 +423,7 @@ const XH_KNOWLEDGE = `
 소속: JYP엔터테인먼트 Studio J
 데뷔일: 2021년 12월 6일
 구성: 6인조 보이밴드
-팬덤명 공식: 플랫봉 / 애칭: 연장
+팬덤명 공식: 플랫봉 / 애칭: 연장 / 응원봉 공식 명칭: 플랫봉 / 응원봉 비공식 애칭: 연장
 그룹명 의미: Extraordinary Heroes의 줄임말, "누구나 히어로가 될 수 있다"
 
 [멤버 정보]
@@ -463,87 +463,81 @@ O.de → 정수 → 주연(2019.11.11) → 건일(2020.01.20) → 가온(2020.02
    FALLBACK 하드코딩 문항 (API 실패 시 사용)
 ═══════════════════════════════════════════════════════ */
 const FALLBACK_QUESTIONS = [
+  // ── 멤버 맞추기 ──────────────────────────────────────
   {
+    id: 'f_m01',
     type: 'member', typeName: '멤버 맞추기',
     question: '건일의 포지션과 팀 내 역할은?',
     options: ['키보드 · 리더', '드럼 · 리더', '드럼 · 메인보컬', '베이스 · 리더'],
     answer: '드럼 · 리더',
-    episode: null,
-    sourceText: '나무위키 Xdinary Heroes', sourceUrl: 'https://namu.wiki/w/Xdinary%20Heroes'
+    episode: null
   },
   {
-    type: 'episode', typeName: '개인·에피소드',
-    question: '주연이 JYP에 입사하게 된 계기가 된 프로그램은?',
-    options: ['슈퍼스타K', '미스터리 음악쇼', '송개팅', 'K팝스타'],
-    answer: '송개팅',
-    episode: '유튜브에서 우연히 송개팅을 보고 신청했다. "날 안 뽑으면 누굴 뽑아?"라는 마인드로 합격했고, 여러 기획사 중 JYP의 밴드 연습생 제안을 택했다.',
-    sourceText: '나무위키 주연', sourceUrl: 'https://namu.wiki/w/%EC%A3%BC%EC%97%B0(Xdinary%20Heroes)'
-  },
-  {
-    type: 'episode', typeName: '개인·에피소드',
-    question: '멤버 전원이 함께 즐겼고, 올림픽 공원에서 같이 잡으러 다닌 게임은?',
-    options: ['리그 오브 레전드', '스타크래프트', '포켓몬 GO', '배틀그라운드'],
-    answer: '포켓몬 GO',
-    episode: null,
-    sourceText: '나무위키 Xdinary Heroes', sourceUrl: 'https://namu.wiki/w/Xdinary%20Heroes'
-  },
-  {
-    type: 'music', typeName: '음악·앨범',
-    question: 'Xdinary Heroes의 데뷔일은?',
-    options: ['2021년 11월 8일', '2021년 12월 6일', '2022년 1월 20일', '2021년 10월 25일'],
-    answer: '2021년 12월 6일',
-    episode: null,
-    sourceText: '나무위키 Xdinary Heroes', sourceUrl: 'https://namu.wiki/w/Xdinary%20Heroes'
-  },
-  {
-    type: 'episode', typeName: '개인·에피소드',
-    question: '건일이 JYP 스카우트 자리(보스턴 호텔)에서 연주한 곡은?',
-    options: ['Caravan', 'Take Five', 'Spain', 'In The Mood'],
-    answer: 'Spain',
-    episode: 'DAY6 월드투어 중 보스턴에 있던 JYP 관계자가 연락해 버클리 입시곡이었던 Spain을 포함한 드럼 연주를 했다. 그 자리에 현 Studio J 본부장이 있었다.',
-    sourceText: '나무위키 건일', sourceUrl: 'https://namu.wiki/w/%EA%B1%B4%EC%9D%BC(Xdinary%20Heroes)'
-  },
-  {
+    id: 'f_m02',
     type: 'member', typeName: '멤버 맞추기',
     question: '정수의 MBTI는?',
     options: ['ENFP', 'INTJ', 'ISFP', 'ENTJ'],
     answer: 'ISFP',
-    episode: '같은 내향형인 Jun Han도 "그냥 쭉 외향형 같다"고 평가. 팀 내 \'엄마\' 포지션으로 멤버들 간식 쓰레기를 몰래 치워주는 사람.',
-    sourceText: '나무위키 정수', sourceUrl: 'https://namu.wiki/w/%EC%A0%95%EC%88%98(Xdinary%20Heroes)'
+    episode: '같은 내향형인 Jun Han도 "그냥 쭉 외향형 같다"고 평가. 팀 내 \'엄마\' 포지션으로 멤버들 간식 쓰레기를 몰래 치워주는 사람.'
   },
   {
-    type: 'episode', typeName: '개인·에피소드',
-    question: '주연이 연습생 시절 힘들 때 방으로 불러서 함께 울었던 멤버는?',
-    options: ['정수', '가온', '건일', 'Jun Han'],
-    answer: '건일',
-    episode: '회사 벌점제도로 멘탈이 박살난 주연이 건일에게 "형, 얘기 좀 해도 돼요?"라고 했고, 일본 연습생 방에서 갑자기 닭똥 같은 눈물을 흘렸다. 당시 두 사람은 룸메이트였다.',
-    sourceText: '나무위키 주연', sourceUrl: 'https://namu.wiki/w/%EC%A3%BC%EC%97%B0(Xdinary%20Heroes)'
+    id: 'f_m03',
+    type: 'member', typeName: '멤버 맞추기',
+    question: '팀 내 "엄마" 포지션으로 불리는 멤버는?',
+    options: ['건일', '가온', '정수', 'O.de'],
+    answer: '정수',
+    episode: '멤버들 간식 쓰레기를 몰래 치워줄 만큼 살뜰하게 챙겨서 붙은 별명.'
   },
   {
-    type: 'episode', typeName: '개인·에피소드',
-    question: '건일이 인터뷰에서 밝힌 롤모델 밴드는?',
-    options: ['Foo Fighters', 'Radiohead', 'MUSE', 'The 1975'],
-    answer: 'MUSE',
-    episode: null,
-    sourceText: '비트튜드 인터뷰', sourceUrl: 'https://magazine.beattitude.kr/special-interview/specialinterview-xdinaryheroes/'
-  },
-  {
-    type: 'episode', typeName: '개인·에피소드',
-    question: '건일이 데뷔 준비 중 다이어트할 때 가장 그리워했다고 밝힌 간식은?',
-    options: ['빼빼로', '허니버터칩', '꼬북칩', '포카칩'],
-    answer: '꼬북칩',
-    episode: '대학 시절 10kg 이상 쪄서 입사 후 다이어트를 해야 했다. "유일한 낙이 집에 가는 길에 과자를 사먹는 것"이었는데, 꼬북칩도 못 먹은 그 과정이 서럽다고 했다.',
-    sourceText: '나무위키 건일', sourceUrl: 'https://namu.wiki/w/%EA%B1%B4%EC%9D%BC(Xdinary%20Heroes)'
-  },
-  {
+    id: 'f_m04',
     type: 'member', typeName: '멤버 맞추기',
     question: '멤버 중 가톨릭 신자인 멤버는?',
     options: ['건일', '가온', '정수', 'O.de'],
     answer: '가온',
-    episode: '건일·정수·O.de는 개신교, 가온은 가톨릭, Jun Han은 무교, 주연은 미공개. 또한 가온만 생일이 6~9월 범위 밖이다.',
-    sourceText: '나무위키 Xdinary Heroes', sourceUrl: 'https://namu.wiki/w/Xdinary%20Heroes'
+    episode: '건일·정수·O.de는 개신교, 가온은 가톨릭, Jun Han은 무교, 주연은 미공개.'
   },
   {
+    id: 'f_m05',
+    type: 'member', typeName: '멤버 맞추기',
+    question: 'O.de의 포지션은?',
+    options: ['리드기타', '베이스', '신디사이저', '키보드'],
+    answer: '신디사이저',
+    episode: null
+  },
+  {
+    id: 'f_m06',
+    type: 'member', typeName: '멤버 맞추기',
+    question: 'Jun Han의 포지션과 종교로 올바른 것은?',
+    options: ['리드기타 · 개신교', '리드기타 · 무교', '리듬기타 · 무교', '베이스 · 무교'],
+    answer: '리드기타 · 무교',
+    episode: null
+  },
+  {
+    id: 'f_m07',
+    type: 'member', typeName: '멤버 맞추기',
+    question: '주연의 포지션과 출신 지역은?',
+    options: ['키보드 · 서울', '베이스 · 부산', '베이스 · 대구', '드럼 · 대구'],
+    answer: '베이스 · 대구',
+    episode: null
+  },
+  {
+    id: 'f_m08',
+    type: 'member', typeName: '멤버 맞추기',
+    question: 'Xdinary Heroes에서 막내 멤버는?',
+    options: ['가온', 'O.de', 'Jun Han', '주연'],
+    answer: '주연',
+    episode: null
+  },
+  {
+    id: 'f_m09',
+    type: 'member', typeName: '멤버 맞추기',
+    question: '"줄쟁이(현악기)" 멤버로만 묶인 것은?',
+    options: ['건일·정수·O.de', '가온·Jun Han·주연', '가온·O.de·주연', '정수·Jun Han·주연'],
+    answer: '가온·Jun Han·주연',
+    episode: '가온(리듬기타), Jun Han(리드기타), 주연(베이스)이 줄쟁이, 나머지 건일·정수·O.de가 안줄쟁이.'
+  },
+  {
+    id: 'f_m10',
     type: 'member', typeName: '멤버 맞추기',
     question: 'JYP 입사 순서가 올바른 것은?',
     options: [
@@ -553,16 +547,230 @@ const FALLBACK_QUESTIONS = [
       '정수 → O.de → 건일 → 주연 → Jun Han → 가온'
     ],
     answer: 'O.de → 정수 → 주연 → 건일 → 가온 → Jun Han',
-    episode: '주연 입사일 2019.11.11, 건일 2020.01.20, Jun Han이 2021.04.01로 가장 마지막. Jun Han은 입사 한 달 반 만에 합류했다고 밝혔다.',
-    sourceText: '나무위키 Xdinary Heroes', sourceUrl: 'https://namu.wiki/w/Xdinary%20Heroes'
+    episode: '주연 입사일 2019.11.11, 건일 2020.01.20, Jun Han이 2021.04.01로 가장 마지막.'
   },
   {
+    id: 'f_m11',
+    type: 'member', typeName: '멤버 맞추기',
+    question: '멤버 중 JYP에 가장 먼저 입사한 멤버는?',
+    options: ['건일', '정수', '주연', 'O.de'],
+    answer: 'O.de',
+    episode: null
+  },
+  {
+    id: 'f_m12',
+    type: 'member', typeName: '멤버 맞추기',
+    question: '멤버 중 JYP에 가장 마지막으로 입사한 멤버는?',
+    options: ['가온', 'Jun Han', '건일', '주연'],
+    answer: 'Jun Han',
+    episode: '2021년 4월 1일 입사 후 한 달 반 만에 데뷔 팀에 합류했다.'
+  },
+  {
+    id: 'f_m13',
+    type: 'member', typeName: '멤버 맞추기',
+    question: '주연의 JYP 입사일은?',
+    options: ['2019년 10월 10일', '2019년 11월 11일', '2020년 1월 20일', '2020년 2월 14일'],
+    answer: '2019년 11월 11일',
+    episode: null
+  },
+  {
+    id: 'f_m14',
+    type: 'member', typeName: '멤버 맞추기',
+    question: '건일의 학력 배경으로 올바른 것은?',
+    options: ['서울대 음대 피아노 전공', '버클리 음대 드럼 장학생', '한예종 실용음악 타악기 전공', '연세대 음대 재학'],
+    answer: '버클리 음대 드럼 장학생',
+    episode: 'DAY6 보스턴 공연 중 JYP 스카우트 제의를 받았고, 버클리 드럼 장학생 신분이었다.'
+  },
+  {
+    id: 'f_m15',
+    type: 'member', typeName: '멤버 맞추기',
+    question: '6명 중 생일이 6~9월 범위 밖인 유일한 멤버는?',
+    options: ['건일', '정수', '가온', 'O.de'],
+    answer: '가온',
+    episode: null
+  },
+  {
+    id: 'f_m16',
+    type: 'member', typeName: '멤버 맞추기',
+    question: '주연의 포지션으로 올바른 것은?',
+    options: ['리드기타 · 보컬', '키보드 · 메인보컬', '베이스 · 메인보컬 · 프론트맨', '신디사이저 · 래퍼'],
+    answer: '베이스 · 메인보컬 · 프론트맨',
+    episode: null
+  },
+  // ── 개인·에피소드 ─────────────────────────────────────
+  {
+    id: 'f_e01',
+    type: 'episode', typeName: '개인·에피소드',
+    question: '건일이 JYP 스카우트 자리(보스턴 호텔)에서 연주한 곡은?',
+    options: ['Caravan', 'Take Five', 'Spain', 'In The Mood'],
+    answer: 'Spain',
+    episode: 'DAY6 월드투어 중 보스턴에 있던 JYP 관계자가 연락해 버클리 입시곡이었던 Spain을 포함한 드럼 연주를 했다.'
+  },
+  {
+    id: 'f_e02',
+    type: 'episode', typeName: '개인·에피소드',
+    question: '건일이 데뷔 준비 다이어트 중 가장 그리워한 간식은?',
+    options: ['빼빼로', '허니버터칩', '꼬북칩', '포카칩'],
+    answer: '꼬북칩',
+    episode: '"유일한 낙이 집에 가는 길에 과자를 사먹는 것"이었는데, 꼬북칩도 못 먹은 그 과정이 서럽다고 했다.'
+  },
+  {
+    id: 'f_e03',
+    type: 'episode', typeName: '개인·에피소드',
+    question: '건일이 인터뷰에서 밝힌 롤모델 밴드는?',
+    options: ['Foo Fighters', 'Radiohead', 'MUSE', 'The 1975'],
+    answer: 'MUSE',
+    episode: null
+  },
+  {
+    id: 'f_e04',
+    type: 'episode', typeName: '개인·에피소드',
+    question: '건일은 멤버들 사이에서 체력 몇 위로 알려져 있나?',
+    options: ['1위', '2위', '3위', '꼴찌'],
+    answer: '1위',
+    episode: null
+  },
+  {
+    id: 'f_e05',
     type: 'episode', typeName: '개인·에피소드',
     question: '정수가 자신의 키보드(롤랜드 팬텀 6)에 붙여준 이름은?',
     options: ['팬텀', '팬더', '판다', '이름 없음'],
     answer: '팬더',
-    episode: '모델명 \'팬텀\'과 어감이 비슷해서 \'팬더\'라는 이름을 붙였다고. 두 번째 키보드인 S88은 아직 이름이 없다.',
-    sourceText: '나무위키 정수', sourceUrl: 'https://namu.wiki/w/%EC%A0%95%EC%88%98(Xdinary%20Heroes)'
+    episode: '모델명 \'팬텀\'과 어감이 비슷해서 \'팬더\'라는 이름을 붙였다. 두 번째 키보드인 S88은 아직 이름이 없다.'
+  },
+  {
+    id: 'f_e06',
+    type: 'episode', typeName: '개인·에피소드',
+    question: '정수의 두 번째 키보드(S88)에 붙은 이름은?',
+    options: ['팬더', '판다', '에스', '이름 없음'],
+    answer: '이름 없음',
+    episode: '첫 번째 키보드 팬텀 6에는 "팬더"라는 이름을 붙였지만 S88은 아직 이름이 없다고 밝혔다.'
+  },
+  {
+    id: 'f_e07',
+    type: 'episode', typeName: '개인·에피소드',
+    question: '주연이 JYP에 입사하게 된 계기가 된 프로그램은?',
+    options: ['슈퍼스타K', '미스터리 음악쇼', '송개팅', 'K팝스타'],
+    answer: '송개팅',
+    episode: '유튜브에서 우연히 송개팅을 보고 신청했다. "날 안 뽑으면 누굴 뽑아?"라는 마인드로 합격.'
+  },
+  {
+    id: 'f_e08',
+    type: 'episode', typeName: '개인·에피소드',
+    question: '주연의 취미 중 해당되지 않는 것은?',
+    options: ['리그 오브 레전드', '포켓몬GO', '슬램덩크 만화', '드럼 연주'],
+    answer: '드럼 연주',
+    episode: '주연의 취미는 LoL, 포켓몬GO, 애니메이션, 슬램덩크 만화. 드럼은 건일의 포지션.'
+  },
+  {
+    id: 'f_e09',
+    type: 'episode', typeName: '개인·에피소드',
+    question: '주연이 팬이라고 밝힌 밴드와 멤버는?',
+    options: ['BTS · RM', '5 Seconds of Summer · 루크 헤밍스', 'One Direction · 해리 스타일스', 'The 1975 · 매티 힐리'],
+    answer: '5 Seconds of Summer · 루크 헤밍스',
+    episode: null
+  },
+  {
+    id: 'f_e10',
+    type: 'episode', typeName: '개인·에피소드',
+    question: '주연이 자신을 한 단어로 표현하면?',
+    options: ['빛난다', '흘러간다', '성장한다', '버텨낸다'],
+    answer: '흘러간다',
+    episode: null
+  },
+  {
+    id: 'f_e11',
+    type: 'episode', typeName: '개인·에피소드',
+    question: '주연이 연습생 시절 힘들 때 함께 울었던 룸메이트는?',
+    options: ['정수', '가온', '건일', 'Jun Han'],
+    answer: '건일',
+    episode: '회사 벌점제도로 힘들었던 주연이 건일에게 "형, 얘기 좀 해도 돼요?"라고 했고, 함께 눈물을 흘렸다.'
+  },
+  {
+    id: 'f_e12',
+    type: 'episode', typeName: '개인·에피소드',
+    question: 'Jun Han이 구매한 기타 모델은?',
+    options: ['Fender Stratocaster', 'Gibson Les Paul', 'Fender Jaguar', 'PRS Custom 24'],
+    answer: 'Fender Jaguar',
+    episode: null
+  },
+  {
+    id: 'f_e13',
+    type: 'episode', typeName: '개인·에피소드',
+    question: '멤버 전원이 함께 즐겼고, 올림픽 공원에서 같이 잡으러 다닌 게임은?',
+    options: ['리그 오브 레전드', '스타크래프트', '포켓몬 GO', '배틀그라운드'],
+    answer: '포켓몬 GO',
+    episode: null
+  },
+  {
+    id: 'f_e14',
+    type: 'episode', typeName: '개인·에피소드',
+    question: 'O.de가 현재 꾸준히 하고 있다고 밝힌 활동은?',
+    options: ['수영', '운동(헬스)으로 몸 키우기', '마라톤', '요가'],
+    answer: '운동(헬스)으로 몸 키우기',
+    episode: null
+  },
+  // ── 음악·앨범 ─────────────────────────────────────────
+  {
+    id: 'f_u01',
+    type: 'music', typeName: '음악·앨범',
+    question: 'Xdinary Heroes의 데뷔일은?',
+    options: ['2021년 11월 8일', '2021년 12월 6일', '2022년 1월 20일', '2021년 10월 25일'],
+    answer: '2021년 12월 6일',
+    episode: null
+  },
+  {
+    id: 'f_u02',
+    type: 'music', typeName: '음악·앨범',
+    question: 'Xdinary Heroes 공식 팬덤명은?',
+    options: ['연장', '플랫봉', '엑디즈', '히어로즈'],
+    answer: '플랫봉',
+    episode: '공식 명칭은 플랫봉, 애칭은 연장.'
+  },
+  {
+    id: 'f_u03',
+    type: 'music', typeName: '음악·앨범',
+    question: 'Xdinary Heroes 응원봉의 공식 명칭은?',
+    options: ['플랫봉', '연장', '엑디즈', '히어로즈'],
+    answer: '플랫봉',
+    episode: '공식 응원봉 명칭은 플랫봉, 팬들 사이에서는 "연장"이라는 비공식 애칭으로도 불린다.'
+  },
+  {
+    id: 'f_u04',
+    type: 'music', typeName: '음악·앨범',
+    question: 'Xdinary Heroes의 소속사는?',
+    options: ['SM엔터테인먼트', 'HYBE', 'YG엔터테인먼트', 'JYP엔터테인먼트 Studio J'],
+    answer: 'JYP엔터테인먼트 Studio J',
+    episode: null
+  },
+  {
+    id: 'f_u05',
+    type: 'music', typeName: '음악·앨범',
+    question: 'Xdinary Heroes 그룹명의 의미로 올바른 것은?',
+    options: [
+      'X세대 히어로들의 모임',
+      'Extraordinary Heroes의 줄임말, "누구나 히어로가 될 수 있다"',
+      'eXtreme Heroes의 줄임말',
+      '미지수(X)를 찾아가는 히어로들'
+    ],
+    answer: 'Extraordinary Heroes의 줄임말, "누구나 히어로가 될 수 있다"',
+    episode: null
+  },
+  {
+    id: 'f_u06',
+    type: 'music', typeName: '음악·앨범',
+    question: 'Xdinary Heroes의 세계관에서 6명이 만난 가상의 공간 이름은?',
+    options: ['메타버스', '♭form(플랫폼)', 'HeroWorld', 'XH Studio'],
+    answer: '♭form(플랫폼)',
+    episode: '온라인 가상합주 공간 ♭form을 통해 6명이 만나 밴드를 결성했다는 세계관.'
+  },
+  {
+    id: 'f_u07',
+    type: 'music', typeName: '음악·앨범',
+    question: 'Xdinary Heroes 세계관 시즌2 타이틀은?',
+    options: ['Happy Death Day', 'Test Me', 'Villain', 'Hero Maker'],
+    answer: 'Test Me',
+    episode: '♭form 베스트 밴드 콘테스트 우승 스토리. 예선 탈락 후 조작으로 결승 진출, 이후 조사로 마무리.'
   }
 ];
 
@@ -668,11 +876,11 @@ const TOPIC_POOL = {
    토픽 선택 (중복 방지 + sessionStorage 추적)
 ═══════════════════════════════════════════════════════ */
 const STORAGE_KEY = 'xhq_used_topics';
-const HISTORY_SIZE = 20;  // 최근 N개 토픽 id는 재출제 안 함
+const HISTORY_SIZE = 30;  // 최근 N개 토픽 id는 재출제 안 함
 
 function pickTopics() {
   let usedIds = [];
-  try { usedIds = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || '[]'); } catch {}
+  try { usedIds = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch {}
 
   function pickFrom(pool, n) {
     const fresh = pool.filter(t => !usedIds.includes(t.id));
@@ -694,9 +902,29 @@ function pickTopics() {
 
   // 사용 이력 저장
   const newUsed = [...usedIds, ...unique.map(t => t.id)].slice(-HISTORY_SIZE);
-  try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify(newUsed)); } catch {}
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(newUsed)); } catch {}
 
   return unique;
+}
+
+/* ═══════════════════════════════════════════════════════
+   FALLBACK 중복 방지 선택
+═══════════════════════════════════════════════════════ */
+const FB_STORAGE_KEY  = 'xhq_used_fallbacks';
+const FB_HISTORY_SIZE = 30;
+
+function pickFallbackQuestions() {
+  let usedIds = [];
+  try { usedIds = JSON.parse(localStorage.getItem(FB_STORAGE_KEY) || '[]'); } catch {}
+
+  const fresh = FALLBACK_QUESTIONS.filter(q => !usedIds.includes(q.id));
+  const src   = fresh.length >= 10 ? fresh : FALLBACK_QUESTIONS;
+  const picked = shuffle(src).slice(0, 10);
+
+  const newUsed = [...usedIds, ...picked.map(q => q.id)].slice(-FB_HISTORY_SIZE);
+  try { localStorage.setItem(FB_STORAGE_KEY, JSON.stringify(newUsed)); } catch {}
+
+  return picked;
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -794,7 +1022,7 @@ async function startQuiz() {
   setLoading(true);
 
   const aiQuestions = await generateQuestions();
-  quiz = aiQuestions ?? shuffle(FALLBACK_QUESTIONS).slice(0, 10);
+  quiz = aiQuestions ?? pickFallbackQuestions();
 
   setLoading(false);
   renderQ();
