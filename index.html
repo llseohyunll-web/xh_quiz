@@ -1198,11 +1198,26 @@ function pickFromPool(pool, storageKey, n) {
 }
 
 function pickFallbackQuestions() {
-  const mcPool = FALLBACK_QUESTIONS.filter(q => q.mode !== 'sa');
-  const saPool = FALLBACK_QUESTIONS.filter(q => q.mode === 'sa');
+  // 4지선다: 카테고리별 보장 (멤버1 + 에피소드1 + 음악1 + 케미1 + 랜덤2)
+  const memberPool  = FALLBACK_QUESTIONS.filter(q => q.mode !== 'sa' && q.id.startsWith('f_m'));
+  const episodePool = FALLBACK_QUESTIONS.filter(q => q.mode !== 'sa' && q.id.startsWith('f_e'));
+  const musicPool   = FALLBACK_QUESTIONS.filter(q => q.mode !== 'sa' && q.id.startsWith('f_u'));
+  const chemiPool   = FALLBACK_QUESTIONS.filter(q => q.mode !== 'sa' && q.id.startsWith('f_c'));
+  const allMcPool   = FALLBACK_QUESTIONS.filter(q => q.mode !== 'sa');
 
-  // 4지선다 6문제, 주관식 4문제
-  const mcPicked = pickFromPool(mcPool, FB_MC_KEY, 6);
+  const guaranteed = [
+    ...pickFromPool(memberPool,  FB_MC_KEY + '_m', 1),
+    ...pickFromPool(episodePool, FB_MC_KEY + '_e', 1),
+    ...pickFromPool(musicPool,   FB_MC_KEY + '_u', 1),
+    ...pickFromPool(chemiPool,   FB_MC_KEY + '_c', 1),
+  ];
+  const usedGuaranteedIds = new Set(guaranteed.map(q => q.id));
+  const remaining = allMcPool.filter(q => !usedGuaranteedIds.has(q.id));
+  const extra = pickFromPool(remaining, FB_MC_KEY + '_x', 2);
+  const mcPicked = shuffle([...guaranteed, ...extra]);
+
+  // 주관식 4문제
+  const saPool   = FALLBACK_QUESTIONS.filter(q => q.mode === 'sa');
   const saPicked = pickFromPool(saPool, FB_SA_KEY, 4);
 
   return shuffle([...mcPicked, ...saPicked]);
